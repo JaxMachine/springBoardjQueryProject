@@ -23,16 +23,20 @@ $(function(){
     });
 
     //Finding the index to remove
-    $("tbody").on("click", ".btn.btn-danger", (evt)=>{
+    $("tbody").on("click", ".btn.btn-danger", function (evt){
+        console.log(evt.target);
         let removeIndex = moviesList.findIndex(movie => movie.currentId === +$(evt.target).data("deleteId"));
+    
 
     //Remove from DOM
-    moviesList.splice(removeIndex, 1);
-        $(evt.target).closest("tr").remove();
+        moviesList.splice(removeIndex, 1);
+        $(evt.target)
+        .closest("tr")
+        .remove();
 
     });
 
-    $(".fas").on("click", (evt)=> {
+    $(".fas").on("click", function(evt) {
         let direction = $(evt.target).hasClass("fa-sort-down") ? "down" : "up";
         let idToSort = $(evt.target).attr("id");
         let sortedMovies = sortBy(moviesList, idToSort, direction);
@@ -42,8 +46,8 @@ $(function(){
 
         //Add items based on the sorted movie
         for (let movie of sortedMovies){
-            const HTMLtoAppend = createMovieDataHTML(movies);
-            $("#movie-table-boy").append(HTMLtoAppend);
+            const HTMLtoAppend = createEntry(movie);
+            $("#movie-table-body").append(HTMLtoAppend);
         }
 
         //Arrow Toggle
@@ -52,19 +56,21 @@ $(function(){
     });
 });
 
-function sortBy(arry, keyToSortBy, direction){
-    return arry.sort((a,b)=>{
-        if (keyToSortBy === "rating"){
-            a[keyToSortBy] = +a[keyToSortBy];
-            b[keyToSortBy] = +b[keyToSortBy];
-        }
-        if (a[keyToSortBy] > b[keyToSortBy]){
-            return direction === "up" ? 1 : -1;
-        } else if (b[keyToSortBy] > a[keyToSortBy]){
-            return direction === "up" ? -1 : 1;
-        }
-        return 0;
-    })
+function sortBy(array, keyToSortBy, direction) {
+    console.log(keyToSortBy);
+    return array.sort(function(a, b) {
+      // since rating is a number, we have to convert these strings to numbers
+      if (keyToSortBy === "rating") {
+        a[keyToSortBy] = +a[keyToSortBy];
+        b[keyToSortBy] = +b[keyToSortBy];
+      }
+      if (a[keyToSortBy] > b[keyToSortBy]) {
+        return direction === "up" ? 1 : -1;
+      } else if (b[keyToSortBy] > a[keyToSortBy]) {
+        return direction === "up" ? -1 : 1;
+      }
+      return 0;
+    });
 }
 
 function createEntry(data){
